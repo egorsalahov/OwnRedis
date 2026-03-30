@@ -1,0 +1,64 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/modules.xml
+/projectSettingsUpdater.xml
+/.idea.OwnRedis.iml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+## [ ПАПКИ СБОРКИ ]
+bin/
+obj/
+publish/
+
+## [ JETBRAINS RIDER / IDEA ]
+.idea/
+*.sln.iml
+*.user
+*.docset
+.metadata/
+
+## [ VISUAL STUDIO ]
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## [ ПАКЕТЫ И ЗАВИСИМОСТИ ]
+node_modules/
+*.nupkg
+# NuGet packages inside the solution
+packages/
+!packages/build/
+
+## [ БАЗА ДАННЫХ (Local DB) ]
+*.mdf
+*.ldf
+*.sdf
+# Если ты хранишь SQLite файл прямо в проекте
+*.db
+*.db-shm
+*.db-wal
+
+## [ НАСТРОЙКИ ПРИЛОЖЕНИЯ ]
+# Скрываем локальные настройки, где могут быть пароли
+appsettings.Development.json
+appsettings.Local.json
+
+## [ ЛОГИ ]
+*.log
+logs/
+TestResults/
+
+## [ ОС ]
+.DS_Store
+Thumbs.db

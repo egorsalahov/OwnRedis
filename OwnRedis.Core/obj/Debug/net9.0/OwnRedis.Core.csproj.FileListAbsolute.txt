@@ -1,0 +1,14 @@
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\bin\Debug\net9.0\OwnRedis.Core.deps.json
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\bin\Debug\net9.0\OwnRedis.Core.dll
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\bin\Debug\net9.0\OwnRedis.Core.pdb
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.csproj.AssemblyReference.cache
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.AssemblyInfoInputs.cache
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.AssemblyInfo.cs
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.csproj.CoreCompileInputs.cache
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.dll
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\refint\OwnRedis.Core.dll
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.pdb
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\ref\OwnRedis.Core.dll
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\bin\Debug\net9.0\OwnRedis.Core.runtimeconfig.json
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.genruntimeconfig.cache
