@@ -190,4 +190,7 @@ C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\bin\Debug\net9.0\runtimes\
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\bin\Debug\net9.0\OwnRedis.Server.staticwebassets.runtime.json
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\obj\Debug\net9.0\compressed\olvh67dgwq-e7mj0aj6dz.gz
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\obj\Debug\net9.0\OwnRedis.Server.sourcelink.json
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\obj\Debug\net9.0\compressed\a16j2bxfa3-{0}-e7mj0aj6dz-e7mj0aj6dz.gz
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Server\obj\Debug\net9.0\swae.build.ex.cache

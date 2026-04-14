@@ -1,16 +1,8 @@
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Server.deps.json
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Server.runtimeconfig.json
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\appsettings.Development.json
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\appsettings.json
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Server.staticwebassets.endpoints.json
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Server.exe
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Client.deps.json
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Client.dll
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Client.pdb
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Core.dll
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Server.dll
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Core.pdb
-C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Server.pdb
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.Client.csproj.AssemblyReference.cache
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.Client.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.Client.AssemblyInfoInputs.cache
@@ -21,3 +13,6 @@ C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\refint\OwnRedis.Client.dll
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.Client.pdb
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\ref\OwnRedis.Client.dll
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\bin\Debug\net9.0\OwnRedis.Client.runtimeconfig.json
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.Client.sourcelink.json
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Client\obj\Debug\net9.0\OwnRedis.Client.genruntimeconfig.cache

@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OwnRedis.Core.Inrerfaces;
 using OwnRedis.Server.Database;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace OwnRedis.Core;
 
@@ -15,6 +16,7 @@ public class DefaultMethodsService : ICacheMethodsService
         _scopeFactory = scopeFactory;
     }
 
+    //TODO: рефакторинг разделение на методы/уровни
     public async Task<CacheObject?> GetAsync(string key)
     {
         var now = DateTimeOffset.UtcNow;
@@ -26,9 +28,9 @@ public class DefaultMethodsService : ICacheMethodsService
 
             if (Storage.Cache.TryRemove(key, out var expiredValue))
             {
-                expiredValue.TTL = now.AddSeconds(15); 
+                expiredValue.TTL = now.AddSeconds(15); //TODO: ~settings.json, конфигурация
                 FallbackStorage.Cache[key] = expiredValue;
-                AdminLogger.Log($"TTL истек: '{key}' перемещен из RAM в Fallback");
+                AdminLogger.Log($"TTL истек: '{key}' перемещен в Fallback");
             }
         }
 
@@ -38,75 +40,126 @@ public class DefaultMethodsService : ICacheMethodsService
             if (fallbackValue.TTL > now)
             {
                 Storage.Cache[key] = fallbackValue;
-                AdminLogger.Log($"Восстановление: '{key}' вернулся из Fallback в RAM");
                 return fallbackValue;
             }
             FallbackStorage.Cache.TryRemove(key, out _);
-            AdminLogger.Log($"Очистка: '{key}' удален из Fallback (время вышло)");
         }
 
+        //TODO: в отдельном сервисе
         // 3. Database
         using (var scope = _scopeFactory.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<RedisDbContext>();
-            var dbItem = await db.CacheItems.FirstOrDefaultAsync(x => x.Key == key);
+            var dbItem = await db.CacheItems.AsNoTracking().FirstOrDefaultAsync(x => x.Key == key);
 
             if (dbItem != null)
             {
-                if (dbItem.TTL > now)
+                //dbttl 
+                if (dbItem.TTL.ToUniversalTime() > now)
                 {
-                    var jsonObject = JsonSerializer.Deserialize<object>(dbItem.ValueJson);
-                    var cacheObj = new CacheObject { Value = jsonObject, TTL = dbItem.TTL };
-                
+                    var rawJson = JsonSerializer.Deserialize<JsonElement>(dbItem.ValueJson);
+
+                    object? processedValue = rawJson.ValueKind switch
+                    {
+                        JsonValueKind.Array => JsonSerializer.Deserialize<List<object>>(dbItem.ValueJson),
+                        JsonValueKind.Object => JsonSerializer.Deserialize<Dictionary<string, object>>(dbItem.ValueJson),
+                        _ => JsonSerializer.Deserialize<object>(dbItem.ValueJson)
+                    };
+
+                    var newRamTTL = now.AddSeconds(dbItem.OriginalTTLSeconds);
+
+                    var cacheObj = new CacheObject
+                    {
+                        Value = processedValue ?? "empty",
+                        TTL = newRamTTL
+                    };
+
+                    // Поднимаем в оперативку
                     Storage.Cache[key] = cacheObj;
-                    AdminLogger.Log($"Восстановление: '{key}' поднят из БД в RAM");
+
+                    // Обновляем TTL в базе данных (даем новый запас 10 минут от нового TTL)
+                    await UpdateDatabaseTtlAsync(key, newRamTTL.AddMinutes(10)); //TODO: ~settings.json, конфигурация
+                    
+
+                    AdminLogger.Log($"Восстановление: '{key}' поднят из БД. Новый RAM TTL: {newRamTTL:T}");
                     return cacheObj;
                 }
+
+                //протух dbttl
                 db.CacheItems.Remove(dbItem);
                 await db.SaveChangesAsync();
-                AdminLogger.Log($"Очистка: '{key}' удален из БД (время вышло)");
+
+                AdminLogger.Log($"Очистка: '{key}' окончательно удален из БД (время вышло)");
             }
         }
         return null;
     }
 
-public async Task SetAsync(string key, CacheObject value, double secondsTTL)
-{
-    var ttl = secondsTTL < 1 
-        ? DateTimeOffset.UtcNow.AddSeconds(10) 
-        : DateTimeOffset.UtcNow.AddSeconds(secondsTTL);
-    
-    value.TTL = ttl;
-
-    //cache
-    Storage.Cache[key] = value;
-
-    //БД
-    using (var scope = _scopeFactory.CreateScope())
+    public async Task SetAsync(string key, CacheObject value, double secondsTTL)
     {
-        var db = scope.ServiceProvider.GetRequiredService<RedisDbContext>();
-        
-        var jsonString = JsonSerializer.Serialize(value.Value);
+        var now = DateTimeOffset.UtcNow; //TODO: сервис для даты
 
-        var existing = await db.CacheItems.FirstOrDefaultAsync(x => x.Key == key);
+        //TTL для RAM
+        value.TTL = now.AddSeconds(secondsTTL).ToUniversalTime();
+        Storage.Cache[key] = value;
 
-        if (existing != null)
+        // TTL для базы (???)
+        var dbTtl = value.TTL.AddMinutes(10);
+
+        using (var scope = _scopeFactory.CreateScope())
         {
-            existing.ValueJson = jsonString;
-            existing.TTL = ttl;
-        }
-        else
-        {
-            await db.CacheItems.AddAsync(new DbCacheItem
+            var db = scope.ServiceProvider.GetRequiredService<RedisDbContext>();
+
+            var options = new JsonSerializerOptions
             {
-                Key = key,
-                ValueJson = jsonString,
-                TTL = ttl
-            });
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            };
+
+            var jsonString = JsonSerializer.Serialize(value.Value, options);
+            var existing = await db.CacheItems.FirstOrDefaultAsync(x => x.Key == key);
+
+            if (existing != null)
+            {
+                existing.ValueJson = jsonString;
+                existing.TTL = dbTtl;
+                existing.OriginalTTLSeconds = secondsTTL;
+            }
+            else
+            {
+                await db.CacheItems.AddAsync(new DbCacheItem
+                {
+                    Key = key,
+                    ValueJson = jsonString,
+                    TTL = dbTtl,
+                    OriginalTTLSeconds = secondsTTL
+                });
+            }
+
+            await db.SaveChangesAsync();
+            AdminLogger.Log($"Set: '{key}' (RAM: {secondsTTL}s, DB запас до {dbTtl:T})");
         }
-        await db.SaveChangesAsync();
     }
-}
+
+    // Вспомогательный метод для ttl в БД при GET
+    private async Task UpdateDatabaseTtlAsync(string key, DateTimeOffset newDbTtl)
+    {
+        try
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<RedisDbContext>();
+            var item = await db.CacheItems.FirstOrDefaultAsync(x => x.Key == key);
+            if (item != null)
+            {
+                item.TTL = newDbTtl;
+                await db.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            AdminLogger.Log($"Ошибка обновления TTL в БД для '{key}': {ex.Message}");
+        }
+    }
 
     public async Task<CacheObject?> DeleteAsync(string key)
     {
@@ -123,58 +176,51 @@ public async Task SetAsync(string key, CacheObject value, double secondsTTL)
                 await db.SaveChangesAsync();
             }
         }
-
         return ramVal;
     }
 
     public async Task<bool> ExistsAsync(string key)
     {
         if (Storage.Cache.ContainsKey(key)) return true;
-        
+
         using (var scope = _scopeFactory.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<RedisDbContext>();
             return await db.CacheItems.AnyAsync(x => x.Key == key && x.TTL > DateTimeOffset.UtcNow);
         }
     }
-    
+
     public async Task<object> GetAdminStatsAsync()
     {
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<RedisDbContext>();
 
-        // Собираем ключи из RAM
-        var ramKeys = Storage.Cache.Select(kvp => new 
-        { 
-            key = kvp.Key, 
-            location = "RAM", 
-            ttl = kvp.Value.TTL 
-        });
+        var dbItems = await db.CacheItems.AsNoTracking().ToListAsync();
+        var allKeysMap = new Dictionary<string, (string Location, DateTimeOffset TTL)>();
 
-        // Собираем ключи из Fallback
-        var fallbackKeys = FallbackStorage.Cache.Select(kvp => new 
-        { 
-            key = kvp.Key, 
-            location = "Fallback", 
-            ttl = kvp.Value.TTL 
-        });
+        foreach (var item in dbItems)
+        {
+            allKeysMap[item.Key] = ("Database", item.TTL);
+        }
 
-        // Собираем ключи из БД
-        var dbItems = await db.CacheItems.ToListAsync();
-        var dbKeys = dbItems.Select(x => new 
-        { 
-            key = x.Key, 
-            location = "Database", 
-            ttl = x.TTL
-        });
+        foreach (var kvp in FallbackStorage.Cache)
+        {
+            allKeysMap[kvp.Key] = ("Fallback", kvp.Value.TTL);
+        }
 
-        // Объединяем всё. Если ключ есть и там и там, берем первый (из RAM)
-        var allKeysList = ramKeys
-            .Concat(fallbackKeys)
-            .Concat(dbKeys)
-            .GroupBy(x => x.key)
-            .Select(g => g.First())
-            .ToList();
+        foreach (var kvp in Storage.Cache)
+        {
+            allKeysMap[kvp.Key] = ("RAM", kvp.Value.TTL);
+        }
+
+        var allKeysList = allKeysMap.Select(x => new
+        {
+            key = x.Key,
+            location = x.Value.Location,
+            ttl = x.Value.TTL
+        })
+        .OrderBy(x => x.key)
+        .ToList();
 
         return new
         {
@@ -183,7 +229,7 @@ public async Task SetAsync(string key, CacheObject value, double secondsTTL)
             databaseCount = dbItems.Count,
             allKeys = allKeysList,
             logs = AdminLogger.Logs.ToArray().Reverse(),
-            memoryUsage = AdminLogger.GetMemoryUsage() 
+            memoryUsage = AdminLogger.GetMemoryUsage()
         };
     }
 }

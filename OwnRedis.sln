@@ -1,10 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11408.102 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwnRedis.Core", "OwnRedis.Core\OwnRedis.Core.csproj", "{7B5E0FB3-C765-4BB2-A283-EE889BB76B6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwnRedis.Server", "OwnRedis.Server\OwnRedis.Server.csproj", "{E3798FF5-F6E2-48F9-8C41-C9E95191811C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwnRedis.Client", "OwnRedis.Client\OwnRedis.Client.csproj", "{5D574791-B64A-4060-9583-42F93F3C8B63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwnRedis.Tests", "OwnRedis.Tests\OwnRedis.Tests.csproj", "{4B89E801-CF4E-4093-9C8C-FD44A44375F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +29,15 @@ Global
 		{5D574791-B64A-4060-9583-42F93F3C8B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D574791-B64A-4060-9583-42F93F3C8B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D574791-B64A-4060-9583-42F93F3C8B63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B89E801-CF4E-4093-9C8C-FD44A44375F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B89E801-CF4E-4093-9C8C-FD44A44375F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B89E801-CF4E-4093-9C8C-FD44A44375F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B89E801-CF4E-4093-9C8C-FD44A44375F8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEE99040-CB17-4E0B-AC5E-A3ED11E95D0E}
 	EndGlobalSection
 EndGlobal

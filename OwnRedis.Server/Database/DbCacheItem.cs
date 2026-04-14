@@ -10,4 +10,6 @@ public class DbCacheItem
     public string ValueJson { get; set; } = string.Empty;
     
     public DateTimeOffset TTL { get; set; }
+
+    public double OriginalTTLSeconds { get; set; }
 }

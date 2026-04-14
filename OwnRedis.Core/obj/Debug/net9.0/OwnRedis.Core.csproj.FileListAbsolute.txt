@@ -12,3 +12,4 @@ C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Co
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\ref\OwnRedis.Core.dll
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\bin\Debug\net9.0\OwnRedis.Core.runtimeconfig.json
 C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.genruntimeconfig.cache
+C:\Users\egors\RiderProjects\OwnRedis\OwnRedis.Core\obj\Debug\net9.0\OwnRedis.Core.sourcelink.json

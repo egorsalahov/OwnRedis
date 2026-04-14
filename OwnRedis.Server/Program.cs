@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using OwnRedis.Core;
 using OwnRedis.Core.Inrerfaces;
 using OwnRedis.Server.Database;
+//TODO: нужна-ли пользователю БД как 3 слой
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,16 +29,21 @@ app.MapGet("/api/cache/{key}", async (string key, ICacheMethodsService service) 
 });
 
 //Set
-app.MapPost("/api/cache", async (RequestObject request, ICacheMethodsService service) => 
+app.MapPost("/api/cache", async (RequestObject request, ICacheMethodsService service) =>
 {
     if (string.IsNullOrWhiteSpace(request.Key))
     {
         return Results.BadRequest("Ключ не может быть пустым");
     }
 
-    await service.SetAsync(request.Key, request.Value, request.secondsTTL);
-    
-    //201 Created и ссылка на новый ресурс
+    // Создаем CacheObject из данных запроса
+    var cacheToSave = new CacheObject
+    {
+        Value = request.Value
+    };
+
+    await service.SetAsync(request.Key, cacheToSave, request.SecondsTTL);
+
     return Results.Created($"/api/cache/{request.Key}", request);
 });
 
